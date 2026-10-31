@@ -7,10 +7,11 @@ export async function api(path, { method = "GET", body } = {}) {
   const t = getToken();
   if (t) headers.Authorization = "Bearer " + t;
   const r = await fetch("/api" + path, { method, headers, body: body ? JSON.stringify(body) : undefined });
-  const data = await r.json().catch(() => ({}));
-  if (!r.ok) {
+  const data = await r.json().catch(() => null);
+  if (!r.ok || data === null) {
     if (r.status === 401) setToken(null);
-    throw Object.assign(new Error(data.error || "အမှားတစ်ခု ဖြစ်သွားပါတယ်"), { status: r.status });
+    const msg = data?.error || `Server က မမှန်ကန်တဲ့ အဖြေပြန်လာပါတယ် (HTTP ${r.status})`;
+    throw Object.assign(new Error(data?.detail ? `${msg}: ${data.detail}` : msg), { status: r.status });
   }
   return data;
 }
