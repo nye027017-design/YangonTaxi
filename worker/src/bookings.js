@@ -1,5 +1,5 @@
 import { json, requireRole } from "./auth.js";
-import { roadKm, estimateFare } from "./fares.js";
+import { roadKm, estimateFare } from "./fares.js"; 
 
 const ACTIVE = "('searching','driver_assigned','arrived','in_trip')";
 const DRIVER_ACTIVE = "('driver_assigned','arrived','in_trip')";
