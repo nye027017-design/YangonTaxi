@@ -1,4 +1,4 @@
-name = "yangon-taxi"
+name = "yangon-taxi" 
 main = "src/index.js"
 compatibility_date = "2025-01-01"
 
