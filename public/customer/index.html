@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="my">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Yangon Taxi - ခရီးသည်</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <!-- Login / စာရင်းသွင်း -->
+  <section id="auth" class="auth hidden">
+    <h1>Yangon Taxi</h1>
+    <form id="authForm">
+      <input id="name" placeholder="နာမည်" autocomplete="name" class="hidden">
+      <input id="phone" type="tel" placeholder="ဖုန်းနံပါတ် (09...)" autocomplete="tel" required>
+      <input id="password" type="password" placeholder="Password" autocomplete="current-password" required>
+      <button id="authBtn" type="submit">ဝင်မယ်</button>
+      <p id="authMsg" class="msg"></p>
+    </form>
+    <button id="toggleAuth" class="link">စာရင်းသွင်းမယ်</button>
+  </section>
+
+  <!-- ပင်မ -->
+  <section id="app" class="hidden">
+    <header><b>Yangon Taxi</b><button id="logout" class="link">ထွက်မယ်</button></header>
+    <div id="map"></div>
+
+    <div id="bookPanel" class="panel">
+      <div class="chips">
+        <button id="chipPick" class="chip on">ခေါ်မယ့်နေရာ</button>
+        <button id="chipDrop" class="chip">သွားမယ့်နေရာ</button>
+        <button id="gps" class="chip">GPS</button>
+      </div>
+      <p id="hint" class="hint">မြေပုံပေါ်မှာ ခေါ်မယ့်နေရာကို ထိပါ</p>
+      <div class="chips">
+        <button id="vTaxi" class="chip on">Taxi</button>
+        <button id="vBike" class="chip">Bike</button>
+      </div>
+      <p id="est" class="est"></p>
+      <button id="bookBtn" disabled>ခရီးစဉ် မှာမယ်</button>
+      <p id="bookMsg" class="msg"></p>
+    </div>
+
+    <div id="trackPanel" class="panel hidden">
+      <h2 id="trackStatus"></h2>
+      <p id="trackInfo"></p>
+      <a id="callBtn" class="btn hidden">Driver ကို ဖုန်းဆက်မယ်</a>
+      <button id="cancelBtn" class="danger">ပယ်ဖျက်မယ်</button>
+    </div>
+  </section>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
