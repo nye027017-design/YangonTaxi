@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="my">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Yangon Taxi - Driver</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <section id="auth" class="auth hidden">
+    <h1>Driver</h1>
+    <form id="authForm">
+      <input id="name" placeholder="နာမည်" class="hidden">
+      <input id="phone" type="tel" placeholder="ဖုန်းနံပါတ် (09...)" required>
+      <input id="password" type="password" placeholder="Password" required>
+      <select id="vehicle" class="hidden">
+        <option value="taxi">Taxi</option>
+        <option value="bike">Bike</option>
+      </select>
+      <input id="plate" placeholder="ကားနံပါတ်" class="hidden">
+      <button id="authBtn" type="submit">ဝင်မယ်</button>
+      <p id="authMsg" class="msg"></p>
+    </form>
+    <button id="toggleAuth" class="link">Driver အဖြစ် စာရင်းသွင်းမယ်</button>
+  </section>
+
+  <section id="app" class="hidden">
+    <header>
+      <b>Driver</b>
+      <div class="right">
+        <button id="onlineBtn">Offline</button>
+        <button id="logout" class="link">ထွက်မယ်</button>
+      </div>
+    </header>
+    <div id="map"></div>
+
+    <div id="reqPanel" class="panel">
+      <p id="reqHint" class="hint">Online ဖွင့်ပြီး ခရီးစဉ်တွေ စောင့်ပါ</p>
+      <div id="reqList" class="reqs"></div>
+      <p id="reqMsg" class="msg"></p>
+    </div>
+
+    <div id="tripPanel" class="panel hidden">
+      <h2 id="tripStatus"></h2>
+      <p id="tripInfo"></p>
+      <a id="callBtn" class="btn hidden">ခရီးသည်ကို ဖုန်းဆက်မယ်</a>
+      <button id="nextBtn"></button>
+      <button id="releaseBtn" class="danger">ပြန်လွှတ်မယ်</button>
+      <p id="tripMsg" class="msg"></p>
+    </div>
+  </section>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
