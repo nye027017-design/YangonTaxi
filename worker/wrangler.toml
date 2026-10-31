@@ -9,6 +9,6 @@ run_worker_first = ["/api/*"]
 
 [[d1_databases]]
 binding = "DB"
-database_name = "yangon-taxi-db"
-database_id = "ဒီနေရာမှာ wrangler d1 create ရလာတဲ့ id ထည့်ပါ"
+database_name = "yangontaxi-db"
+database_id = "fa29ca2b-57e2-4b7b-a770-14eea29c7220"
 migrations_dir = "migrations"
