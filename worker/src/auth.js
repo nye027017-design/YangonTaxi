@@ -1,4 +1,4 @@
-const ITER = 100000; // Workers PBKDF2 အများဆုံး
+const ITER = 100000; // Workers PBKDF2 အများဆုံး 
 const SESSION_DAYS = 30;
 const enc = new TextEncoder();
 
