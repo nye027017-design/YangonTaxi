@@ -1,0 +1,17 @@
+name = "yangon-taxi"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+
+[assets]
+directory = "../public"
+binding = "ASSETS"
+run_worker_first = ["/api/*"]
+
+[vars]
+DEBUG = "1"   # Error အကြောင်းရင်းပြဖို့။ အားလုံးအဆင်ပြေရင် "0" ပြောင်းပါ
+
+[[d1_databases]]
+binding = "DB"
+database_name = "yangon-taxi-db"
+database_id = "ဒီနေရာမှာ wrangler d1 create ရလာတဲ့ id ထည့်ပါ"
+migrations_dir = "migrations"
