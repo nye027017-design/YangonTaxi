@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="my">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Yangon Taxi</title>
+  <meta name="theme-color" content="#0d9f55">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Yangon Taxi">
+  <link rel="manifest" href="/customer/manifest.webmanifest">
+  <link rel="icon" type="image/png" href="/customer/icons/icon-192.png">
+  <link rel="apple-touch-icon" href="/customer/icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="/shared/theme.css">
+  <link rel="stylesheet" href="/customer/css/app.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-car" viewBox="0 0 32 20">
+    <rect x="14" y="0" width="4" height="2.2" rx=".6" fill="currentColor"/>
+    <path d="M7 8.5 10.4 3.2c.4-.7 1-1 1.8-1h7.6c.8 0 1.4.3 1.8 1L25 8.5z" fill="currentColor"/>
+    <rect x="1" y="8" width="30" height="8.5" rx="3.2" fill="currentColor"/>
+    <path d="M11 8 12.9 4.6h2.6V8zM17 8V4.6h2.4L21.2 8z" fill="#fff" opacity=".92"/>
+    <circle cx="8" cy="16.4" r="3.2" fill="#14231b"/><circle cx="24" cy="16.4" r="3.2" fill="#14231b"/>
+    <circle cx="8" cy="16.4" r="1.2" fill="#fff"/><circle cx="24" cy="16.4" r="1.2" fill="#fff"/>
+  </symbol>
+  <symbol id="i-stupa" viewBox="0 0 100 170">
+    <path d="M50 2l1.5 20h-3z"/><ellipse cx="50" cy="27" rx="8" ry="2.4"/>
+    <path d="M44 29h12l-2 10h-8zM42 39h16l-2 12H44zM40 51h20l-3 15H43z"/>
+    <path d="M43 66C30 92 24 110 22 132h56C76 110 70 92 57 66z"/>
+    <rect x="18" y="132" width="64" height="8" rx="1"/><rect x="12" y="140" width="76" height="9" rx="1"/><rect x="6" y="149" width="88" height="21" rx="1"/>
+  </symbol>
+</svg>
+
+<!-- ① ကြိုဆိုစာမျက်နှာ -->
+<section id="splash" class="splash hidden">
+  <div class="splash-top">
+    <svg class="logo" viewBox="0 0 64 80" role="img" aria-label="Yangon Taxi">
+      <path d="M32 0C14.3 0 0 14.3 0 32c0 24 32 48 32 48s32-24 32-48C64 14.3 49.7 0 32 0z" fill="#fff"/>
+      <svg x="10" y="20" width="44" height="27.5" viewBox="0 0 32 20" style="color:#0d9f55"><use href="#i-car"/></svg>
+    </svg>
+    <h1>Yangon Taxi</h1>
+    <p>ရန်ကုန်မှာ ကားခေါ်ရတာ<br>လွယ်ကူမြန်ဆန်ပါတယ်</p>
+  </div>
+  <svg class="skyline" viewBox="0 0 360 170" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+    <path d="M0 120c40-24 80-18 120-6s90 8 130-8 80-10 110 4v60H0z" fill="rgba(3,70,38,.35)"/>
+    <g fill="#f4de86" opacity=".6"><use href="#i-stupa" x="22" y="78" width="54" height="92"/><use href="#i-stupa" x="286" y="82" width="52" height="88"/></g>
+    <g fill="#f6e394"><use href="#i-stupa" x="128" y="2" width="104" height="168"/></g>
+    <path d="M0 150c30-14 60-12 90-2s60 4 90-4 90-10 130 0 50 8 50 8v18H0z" fill="#06452a"/>
+    <g fill="#08563a"><circle cx="40" cy="152" r="14"/><circle cx="64" cy="158" r="12"/><circle cx="296" cy="154" r="15"/><circle cx="322" cy="158" r="12"/><circle cx="110" cy="162" r="11"/><circle cx="252" cy="162" r="11"/></g>
+  </svg>
+  <div class="splash-bottom">
+    <button id="startBtn" class="btn-white">စတင်မယ်</button>
+    <button id="loginLink" class="btn-ghost">အကောင့်ရှိပြီးသား - ဝင်မယ်</button>
+    <button class="btn-ghost hidden" data-install>📲 ဖုန်းထဲသို့ App ထည့်သွင်းရန်</button>
+    <p class="ios-hint hidden" data-ios-hint>iPhone: Safari ရဲ့ Share ခလုတ်ကို နှိပ်ပြီး "Add to Home Screen" ကို ရွေးပါ။</p>
+  </div>
+</section>
+
+<!-- ② Login / စာရင်းသွင်း -->
+<section id="auth" class="auth hidden">
+  <div class="auth-head">
+    <button id="authBack" class="back" aria-label="နောက်သို့" data-ic="back"></button>
+    <svg class="logo sm" viewBox="0 0 64 80" aria-hidden="true">
+      <path d="M32 0C14.3 0 0 14.3 0 32c0 24 32 48 32 48s32-24 32-48C64 14.3 49.7 0 32 0z" fill="#fff"/>
+      <svg x="10" y="20" width="44" height="27.5" viewBox="0 0 32 20" style="color:#0d9f55"><use href="#i-car"/></svg>
+    </svg>
+    <h1 id="authTitle">ဝင်မယ်</h1>
+    <p id="authSub">ဖုန်းနံပါတ်နဲ့ Password ထည့်ပါ</p>
+  </div>
+  <form id="authForm" class="auth-card">
+    <input id="name" placeholder="နာမည်" autocomplete="name" class="hidden">
+    <input id="phone" type="tel" inputmode="tel" autocomplete="username" placeholder="ဖုန်းနံပါတ် (09...)" required>
+    <input id="password" type="password" autocomplete="current-password" placeholder="Password" required>
+    <button id="authBtn" class="primary" type="submit">ဝင်မယ်</button>
+    <p id="authMsg" class="msg" role="alert"></p>
+    <button id="toggleAuth" type="button" class="link">စာရင်းသွင်းမယ်</button>
+  </form>
+</section>
+
+<!-- ③ အဓိက App -->
+<section id="app" class="hidden">
+  <div id="map"></div>
+
+  <div class="search">
+    <span class="si" data-ic="search"></span>
+    <input id="q" placeholder="ဘယ်သွားမလဲ?" autocomplete="off" aria-label="သွားမယ့်နေရာ ရှာရန်">
+    <div id="results" class="results hidden"></div>
+  </div>
+
+  <div id="pill" class="pill hidden" aria-live="polite">
+    <span class="pi" data-ic="pin"></span>
+    <span class="pt"><b id="pillT"></b><small id="pillS"></small></span>
+  </div>
+
+  <div id="centerPin" class="cpin hidden"></div>
+
+  <div id="sheet" class="sheet">
+    <button id="gps" class="fab loc" aria-label="ကျွန်ုပ်တည်နေရာ" data-ic="gps"></button>
+    <div class="grab"></div>
+
+    <!-- ခရီးစဉ်မှာရန် -->
+    <div id="vBook">
+      <div class="route">
+        <button id="rowPick" class="rrow on"><i class="dot g"></i><span><small>ခေါ်မယ့်နေရာ</small><b id="pickTxt"></b></span></button>
+        <button id="rowDrop" class="rrow"><i class="dot r"></i><span><small>သွားမယ့်နေရာ</small><b id="dropTxt"></b></span></button>
+      </div>
+      <p id="tripDist" class="dist hidden"></p>
+      <div class="opts">
+        <button class="opt on" data-v="taxi"><span class="oi" data-vi="taxi"></span><b>Taxi</b><small class="k"></small><span class="p">-</span></button>
+        <button class="opt" data-v="bike"><span class="oi" data-vi="bike"></span><b>Bike</b><small class="k"></small><span class="p">-</span></button>
+      </div>
+      <button id="bookBtn" class="primary" disabled>ခရီးစဉ် မှာမယ်</button>
+      <p id="bookMsg" class="msg"></p>
+    </div>
+
+    <!-- မြေပုံပေါ် ပင်ရွေးခြင်း -->
+    <div id="vPick" class="hidden">
+      <p id="pickTitle" class="sub"></p>
+      <p id="pickAddr" class="place"></p>
+      <p id="pickDist" class="dist"></p>
+      <button id="confirmPick" class="primary">ဒီနေရာကို ရွေးမယ်</button>
+      <button id="backPick" class="cancel">နောက်ပြန်</button>
+    </div>
+
+    <!-- Driver ရှာနေစဉ် -->
+    <div id="vSearch" class="hidden center find">
+      <div class="radar"><i></i><i></i><i></i><div class="core" data-vi="taxi"></div></div>
+      <h2>Driver ရှာနေပါတယ်...</h2>
+      <p class="sub">အနီးအနားက Driver တွေကို ရှာနေပါတယ်<br><small>၁၀ မိနစ်အတွင်း မတွေ့ရင် အလိုအလျောက် ပိတ်ပါမယ်</small></p>
+      <button class="cancel" data-cancel>ပယ်ဖျက်မယ်</button>
+    </div>
+
+    <!-- Driver လက်ခံပြီး / ခရီးစဉ်ဆောင်ရွက်နေစဉ် -->
+    <div id="vTrip" class="hidden">
+      <div class="drv">
+        <div id="avatar" class="avatar"></div>
+        <div class="grow">
+          <b id="dName"></b>
+          <small id="dPlate"></small>
+          <small id="dRate" class="rate"></small>
+        </div>
+        <span id="tripVeh" class="vbadge" data-vi="taxi"></span>
+      </div>
+      <div class="acts">
+        <a id="callBtn" class="act"><span data-ic="call"></span>ဖုန်းဆက်</a>
+        <a id="smsBtn" class="act"><span data-ic="sms"></span>စာပို့</a>
+        <button id="shareBtn" class="act"><span data-ic="share"></span>မျှဝေ</button>
+      </div>
+      <div class="banner"><b id="bnT"></b><small id="bnS"></small></div>
+      <div class="farebox"><div><small>ခန့်မှန်းခ</small><b id="tripFare"></b></div><span class="cash">💵 ငွေသား</span></div>
+      <button id="cancelTrip" class="cancel" data-cancel>ပယ်ဖျက်မယ်</button>
+    </div>
+  </div>
+
+  <!-- ခရီးမှတ်တမ်း -->
+  <section id="pgActivity" class="page hidden">
+    <h1>ခရီးမှတ်တမ်း</h1>
+    <div id="histList"></div>
+  </section>
+
+  <!-- အကောင့် -->
+  <section id="pgAccount" class="page hidden">
+    <h1>အကောင့်</h1>
+    <div class="card prof">
+      <div id="accAvatar" class="avatar big"></div>
+      <div><b id="accName"></b><small id="accPhone"></small></div>
+    </div>
+    <div class="card">
+      <p class="row"><span>ငွေပေးချေမှု</span><b>💵 ငွေသား</b></p>
+      <button class="btn-row hidden" data-install>📲 ဖုန်းထဲသို့ App ထည့်သွင်းရန်</button>
+      <p class="sub hidden" data-ios-hint>iPhone: Safari ရဲ့ Share ခလုတ်ကို နှိပ်ပြီး "Add to Home Screen" ကို ရွေးပါ။</p>
+    </div>
+    <button id="logout" class="logout">အကောင့်မှ ထွက်မယ်</button>
+  </section>
+
+  <!-- ခရီးပြီးဆုံးပြီ -->
+  <section id="vDone" class="done hidden">
+    <div class="done-card">
+      <div class="check" data-ic="check"></div>
+      <h2>ခရီးပြီးဆုံးပါပြီ!</h2>
+      <p id="dnFare" class="big"></p>
+      <p class="sub">ငွေသားနဲ့ ပေးချေပါ</p>
+      <p id="dnInfo" class="sub small"></p>
+      <hr>
+      <p class="rate-t">Driver ကို အမှတ်ပေးပါ</p>
+      <p class="sub small">(မပေးလည်း ရပါတယ်)</p>
+      <div id="stars" class="stars"><button aria-label="၁ မှတ်">★</button><button aria-label="၂ မှတ်">★</button><button aria-label="၃ မှတ်">★</button><button aria-label="၄ မှတ်">★</button><button aria-label="၅ မှတ်">★</button></div>
+      <button id="doneBtn" class="primary">ပြီးပါပြီ</button>
+    </div>
+  </section>
+
+  <nav id="tabbar" class="tabbar hidden" aria-label="ပင်မမီနူး">
+    <button class="tab on" data-tab="home"><span data-ic="home"></span>ပင်မ</button>
+    <button class="tab" data-tab="activity"><span data-ic="activity"></span>မှတ်တမ်း</button>
+    <button class="tab" data-tab="account"><span data-ic="user"></span>အကောင့်</button>
+  </nav>
+</section>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script type="module" src="/customer/js/main.js"></script>
+</body>
+</html>
