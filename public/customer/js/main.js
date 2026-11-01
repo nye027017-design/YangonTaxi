@@ -1,4 +1,4 @@
-import { api, getToken, setToken } from "./api.js";
+import { api, getToken, setToken } from "./api.js"; 
 
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
