@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="my">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Yangon Taxi - Driver</title>
+  <meta name="theme-color" content="#0a5c33">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Taxi Driver">
+  <link rel="manifest" href="/driver/manifest.webmanifest">
+  <link rel="icon" type="image/png" href="/driver/icons/icon-192.png">
+  <link rel="apple-touch-icon" href="/driver/icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="/shared/theme.css">
+  <link rel="stylesheet" href="/driver/css/app.css">
+</head>
+<body>
+  <section id="auth" class="auth hidden">
+    <div class="auth-head">
+      <img src="/driver/icons/icon-192.png" alt="" width="64" height="64">
+      <h1>Yangon Taxi Driver</h1>
+      <p>ယာဉ်မောင်း App</p>
+    </div>
+    <form id="authForm" class="auth-card">
+      <input id="name" placeholder="နာမည်" autocomplete="name" class="hidden">
+      <input id="phone" type="tel" inputmode="tel" autocomplete="username" placeholder="ဖုန်းနံပါတ် (09...)" required>
+      <input id="password" type="password" autocomplete="current-password" placeholder="Password" required>
+      <select id="vehicle" class="hidden">
+        <option value="taxi">Taxi</option>
+        <option value="bike">Bike</option>
+      </select>
+      <input id="plate" placeholder="ကားနံပါတ်" class="hidden">
+      <button id="authBtn" class="primary" type="submit">ဝင်မယ်</button>
+      <p id="authMsg" class="msg" role="alert"></p>
+      <button id="toggleAuth" type="button" class="link">Driver အဖြစ် စာရင်းသွင်းမယ်</button>
+      <button type="button" class="link hidden" data-install>📲 ဖုန်းထဲသို့ App ထည့်သွင်းရန်</button>
+      <p class="sub center hidden" data-ios-hint>iPhone: Safari ရဲ့ Share ခလုတ်ကို နှိပ်ပြီး "Add to Home Screen" ကို ရွေးပါ။</p>
+    </form>
+  </section>
+
+  <section id="app" class="hidden" data-mode="idle">
+    <div id="map"></div>
+
+    <div class="topcard">
+      <div id="meAv" class="av">D</div>
+      <div class="who"><b id="meName">Driver</b><small id="stateTxt">Offline</small></div>
+      <button id="onlineBtn" role="switch" aria-checked="false" aria-label="Online / Offline">Offline</button>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><span class="si">🧾</span><div><small>ယနေ့ ခရီး</small><b id="stTrips">0</b></div></div>
+      <div class="stat"><span class="si">💰</span><div><small>ယနေ့ ဝင်ငွေ (ကျပ်)</small><b id="stEarn">0</b></div></div>
+      <button id="logout" class="stat out">ထွက်</button>
+    </div>
+
+    <div id="countdown" class="countdown hidden" aria-live="off">
+      <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" class="bg"/><circle id="cdRing" cx="50" cy="50" r="45" class="fg"/></svg>
+      <div><b id="cdNum">30</b><small>စက္ကန့်</small></div>
+    </div>
+
+    <!-- စောင့်ဆိုင်းစဉ် / ခရီးတောင်းဆိုမှု -->
+    <div id="reqPanel" class="panel">
+      <div class="grab"></div>
+      <div id="idleBox">
+        <p id="reqHint" class="hint center">Online ဖွင့်ပြီး ခရီးစဉ်တွေ စောင့်ပါ</p>
+        <button id="findBtn" class="primary">Online ဖွင့်မယ်</button>
+      </div>
+      <div id="reqCard" class="hidden">
+        <div class="rhead"><b>ခရီးတောင်းဆိုမှု</b><small id="rcAway"></small></div>
+        <div class="cust">
+          <div id="rcAv" class="av big"></div>
+          <div class="grow"><b id="rcName"></b><small>💵 ငွေသားနဲ့ ပေးချေမယ်</small></div>
+          <b id="rcFare" class="fare"></b>
+        </div>
+        <div class="addrs">
+          <div class="addr"><i class="dot g"></i><span id="rcPick"></span></div>
+          <span id="rcTrip" class="chip"></span>
+          <div class="addr"><i class="dot r"></i><span id="rcDrop"></span></div>
+        </div>
+        <div class="two">
+          <button id="declineBtn" class="soft">ငြင်းမယ်</button>
+          <button id="acceptBtn" class="primary">လက်ခံမယ်</button>
+        </div>
+      </div>
+      <p id="reqMsg" class="msg"></p>
+    </div>
+
+    <!-- ခရီးစဉ်ဆောင်ရွက်စဉ် -->
+    <div id="tripPanel" class="panel hidden">
+      <div class="grab"></div>
+      <div class="rhead"><b id="tripStatus"></b><small id="tripAway"></small></div>
+      <div class="cust">
+        <div id="tcAv" class="av big"></div>
+        <div class="grow"><b id="tcName"></b><small>💵 ငွေသား · <span id="tcFare"></span></small></div>
+        <a id="smsBtn" class="rb" aria-label="စာပို့">💬</a>
+        <a id="callBtn" class="rb" aria-label="ဖုန်းဆက်">📞</a>
+      </div>
+      <p id="tripInfo" class="info"></p>
+      <button id="nextBtn" class="primary"></button>
+      <button id="releaseBtn" class="danger">ပြန်လွှတ်မယ်</button>
+      <p id="tripMsg" class="msg"></p>
+    </div>
+  </section>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script type="module" src="/driver/js/main.js"></script>
+</body>
+</html>
