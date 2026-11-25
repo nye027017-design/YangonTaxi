@@ -6,8 +6,8 @@ compatibility_date = "2025-01-01"
 # `wrangler d1 create wingo-demo-db` ပြီးရင် ထွက်လာတဲ့ database_id ကို အောက်မှာ အစားထိုးပါ
 [[d1_databases]]
 binding = "DB"
-database_name = "wingo-demo-db"
-database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+database_name = "yangontaxi-db"
+database_id = "fa29ca2b-57e2-4b7b-a770-14eea29c7220"
 
 # ---------- Durable Object (GameRoom) ----------
 [[durable_objects.bindings]]
