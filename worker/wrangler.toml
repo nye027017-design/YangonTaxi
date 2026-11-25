@@ -1,0 +1,29 @@
+name = "wingo-demo-worker"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+
+# ---------- D1 Database ----------
+# `wrangler d1 create wingo-demo-db` ပြီးရင် ထွက်လာတဲ့ database_id ကို အောက်မှာ အစားထိုးပါ
+[[d1_databases]]
+binding = "DB"
+database_name = "wingo-demo-db"
+database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+
+# ---------- Durable Object (GameRoom) ----------
+[[durable_objects.bindings]]
+name = "GAME_ROOM"
+class_name = "GameRoom"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["GameRoom"]
+
+# ---------- Non-secret variables ----------
+[vars]
+# Cloudflare Pages domain ကို deploy ပြီးရင် ဒီမှာ ပြောင်းထည့်ပါ (CORS အတွက်)
+ALLOWED_ORIGIN = "http://localhost:8788"
+
+# Secrets (wrangler secret put ဖြင့် ထည့်ရမယ် — ဒီဖိုင်ထဲ မရေးပါနဲ့):
+#   GOOGLE_CLIENT_ID
+#   JWT_SECRET
+#   ADMIN_EMAILS   (admin ဖြစ်စေချင်တဲ့ email တွေ၊ comma နဲ့ ခြား)
